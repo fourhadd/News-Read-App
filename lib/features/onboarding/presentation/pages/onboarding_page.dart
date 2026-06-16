@@ -1,6 +1,7 @@
 // features/onboarding/presentation/pages/onboarding_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart'; // 💡 Geri qayıtmaq üçün pop funksiyasına görə əlavə edildi
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -8,7 +9,12 @@ import '../widgets/continue_button.dart';
 import '../widgets/interests_grid.dart';
 
 class OnboardingPage extends StatelessWidget {
-  const OnboardingPage({super.key});
+  final bool isFromSettings; // 💡 Ayarlardan gəlib-gəlmədiyini tutan parametr
+
+  const OnboardingPage({
+    super.key, 
+    this.isFromSettings = false, // Default olaraq false (ilk açılış onboarding)
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +25,13 @@ class OnboardingPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: colors.background,
         elevation: 0,
+        // 💡 Əgər ayarlardan gəlibsə, sol tərəfdə GERİ Ox işarəsini göstəririk, yoxsa boş qalır
+        leading: isFromSettings
+            ? IconButton(
+                icon: Icon(Icons.arrow_back, color: colors.textPrimary, size: 24.sp),
+                onPressed: () => context.pop(),
+              )
+            : null,
         title: Text(
           AppStrings.appName,
           style: AppTextStyles.headlineMedium.copyWith(color: colors.primary),
@@ -51,10 +64,11 @@ class OnboardingPage extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 30.h),
-                  child: const InterestsGrid(),
+                  child: const InterestsGrid(), // Ehtiyac olarsa bura da parametr ötürülə bilər
                 ),
               ),
-              const ContinueButton(),
+              // 💡 Düymənin daxilində "Davam et" yoxsa "Yadda saxla" yazılacağını idarə etmək üçün ötürürük
+              ContinueButton(isFromSettings: isFromSettings),
             ],
           ),
         ),

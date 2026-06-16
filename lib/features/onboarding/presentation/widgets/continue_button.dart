@@ -10,7 +10,9 @@ import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key});
+  final bool isFromSettings;
+
+  const ContinueButton({super.key, this.isFromSettings = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,11 @@ class ContinueButton extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous.isSaved != current.isSaved && current.isSaved,
       listener: (context, state) {
-        context.go('/home');
+        if (isFromSettings) {
+          context.pop();
+        } else {
+          context.go('/home');
+        }
       },
       child: BlocBuilder<OnboardingCubit, OnboardingState>(
         buildWhen: (previous, current) =>
@@ -47,7 +53,7 @@ class ContinueButton extends StatelessWidget {
                 elevation: 0,
               ),
               child: Text(
-                AppStrings.continueButton,
+                isFromSettings ? 'Yadda saxla' : AppStrings.continueButton,
                 style: AppTextStyles.headlineMedium.copyWith(
                   color: isEnabled ? Colors.white : Colors.white60,
                 ),

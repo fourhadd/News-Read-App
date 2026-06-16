@@ -1,6 +1,7 @@
 // features/home/presentation/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:news_feed/features/home/presentation/widgets/news_category_tabs.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -34,7 +35,9 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: colors.textPrimary),
-            onPressed: () {},
+            onPressed: () {
+              context.go('/search');
+            },
           ),
           IconButton(
             icon: Icon(Icons.notifications_none, color: colors.textPrimary),

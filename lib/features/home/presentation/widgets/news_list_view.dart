@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_feed/core/constants/app_colors.dart';
+import 'package:news_feed/core/widgets/custom_error_widget.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import 'news_card_tile.dart';
@@ -21,19 +22,26 @@ class NewsListView extends StatelessWidget {
             state.status == HomeStatus.loading) {
           return const NewsListShimmer();
         }
+
         if (state.status == HomeStatus.failure && state.articles.isEmpty) {
+          return CustomErrorWidget(
+            errorMessage: 'Gözlənilməz bir xəta yarandı.',
+            onRetry: () => context.read<HomeCubit>().fetchNews(),
+          );
+        }
+
+        if (state.status == HomeStatus.success && state.articles.isEmpty) {
           return Center(
             child: Text(
-              state.errorMessage ?? 'Xəta baş verdi',
-              style: TextStyle(color: colors.textPrimary),
+              'Xəbər tapılmadı.',
+              style: TextStyle(color: colors.textSecondary, fontSize: 14.sp),
             ),
           );
         }
-        if (state.status == HomeStatus.success && state.articles.isEmpty) {
-          return const Center(child: Text('Xəbər tapılmadı.'));
-        }
+
         return RefreshIndicator.adaptive(
           onRefresh: () => context.read<HomeCubit>().fetchNews(),
+          color: colors.primary,
           child: ListView.builder(
             itemCount: state.articles.length,
             physics: const BouncingScrollPhysics(),

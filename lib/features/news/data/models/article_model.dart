@@ -17,12 +17,13 @@ class ArticleModel extends ArticleEntity {
 
   factory ArticleModel.fromJson(Map<String, dynamic> json, String category) {
     final fields = json['fields'] ?? {};
+    final rawBody = fields['body'] ?? '';
+
     return ArticleModel(
       id: json['id'] ?? '',
       title: fields['headline'] ?? json['webTitle'] ?? '',
-      content: fields['body'] ?? '',
+      content: _sanitizeHtmlContent(rawBody),
       imageUrl: fields['thumbnail'],
-
       source: const SourceModel(id: 'the-guardian', name: 'The Guardian'),
       author: fields['byline'],
       publishedAt: DateTime.parse(
@@ -31,6 +32,22 @@ class ArticleModel extends ArticleEntity {
       category: category,
       url: json['webUrl'] ?? '',
     );
+  }
+
+  static String _sanitizeHtmlContent(String html) {
+    if (html.isEmpty) return '';
+    String cleaned = html;
+    cleaned = cleaned.replaceAll(RegExp(r'<[^>]*>'), '');
+    cleaned = cleaned
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
+    cleaned = cleaned.replaceAll(RegExp(r'\n\s*\n'), '\n\n');
+
+    return cleaned.trim();
   }
 
   Map<String, dynamic> toJson() {
