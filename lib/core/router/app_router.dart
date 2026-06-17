@@ -1,6 +1,8 @@
 // core/router/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:news_feed/core/router/smooth_page_route.dart';
 import 'package:news_feed/core/widgets/main_wrapper.dart';
 import 'package:news_feed/features/article_detail/presentation/pages/article_detail_page.dart';
 import 'package:news_feed/features/news/domain/entities/article_entity.dart';
@@ -26,16 +28,37 @@ class AppRouter {
     debugLabel: 'settingsShell',
   );
 
+  static final _storage = GetStorage();
+
   static final GoRouter router = GoRouter(
     initialLocation: '/onboarding',
     navigatorKey: _rootNavigatorKey,
+
+    redirect: (context, state) {
+      final bool isOnboardingComplete =
+          _storage.read('is_onboarding_complete') ?? false;
+      final bool loggingIn = state.matchedLocation == '/onboarding';
+
+      if (isOnboardingComplete && loggingIn) {
+        final isFromSettings = state.extra as bool? ?? false;
+        if (isFromSettings) return null;
+
+        return '/home';
+      }
+
+      return null;
+    },
+
     routes: [
       GoRoute(
         path: '/onboarding',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final isFromSettings = state.extra as bool? ?? false;
-          return OnboardingPage(isFromSettings: isFromSettings);
+          return SmoothPageRoute(
+            key: state.pageKey,
+            child: OnboardingPage(isFromSettings: isFromSettings),
+          );
         },
       ),
 
@@ -49,38 +72,46 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/home',
-                builder: (context, state) => const HomePage(),
+                pageBuilder: (context, state) => SmoothPageRoute(
+                  key: state.pageKey,
+                  child: const HomePage(),
+                ),
               ),
             ],
           ),
-
           StatefulShellBranch(
             navigatorKey: _shellNavigatorSearchKey,
             routes: [
               GoRoute(
                 path: '/search',
-                builder: (context, state) => const SearchPage(),
+                pageBuilder: (context, state) => SmoothPageRoute(
+                  key: state.pageKey,
+                  child: const SearchPage(),
+                ),
               ),
             ],
           ),
-
           StatefulShellBranch(
             navigatorKey: _shellNavigatorBookmarkKey,
             routes: [
               GoRoute(
                 path: '/bookmarks',
-                builder: (context, state) => const BookmarksPage(),
+                pageBuilder: (context, state) => SmoothPageRoute(
+                  key: state.pageKey,
+                  child: const BookmarksPage(),
+                ),
               ),
             ],
           ),
-
           StatefulShellBranch(
             navigatorKey: _shellNavigatorSettingsKey,
             routes: [
               GoRoute(
                 path: '/settings',
-
-                builder: (context, state) => const SettingsPage(),
+                pageBuilder: (context, state) => SmoothPageRoute(
+                  key: state.pageKey,
+                  child: const SettingsPage(),
+                ),
               ),
             ],
           ),
@@ -90,15 +121,22 @@ class AppRouter {
       GoRoute(
         path: '/article-detail',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final article = state.extra as ArticleEntity;
-          return ArticleDetailPage(article: article);
+          return SmoothPageRoute(
+            key: state.pageKey,
+            child: ArticleDetailPage(article: article),
+          );
         },
       ),
+
       GoRoute(
         path: '/webview',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => WebViewPage(url: state.extra as String),
+        pageBuilder: (context, state) => SmoothPageRoute(
+          key: state.pageKey,
+          child: WebViewPage(url: state.extra as String),
+        ),
       ),
     ],
   );

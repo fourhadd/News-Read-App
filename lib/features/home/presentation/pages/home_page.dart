@@ -39,10 +39,6 @@ class HomePage extends StatelessWidget {
               context.go('/search');
             },
           ),
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: colors.textPrimary),
-            onPressed: () {},
-          ),
           SizedBox(width: 8.w),
         ],
       ),

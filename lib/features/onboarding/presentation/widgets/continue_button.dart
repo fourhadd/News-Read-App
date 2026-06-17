@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -25,6 +26,8 @@ class ContinueButton extends StatelessWidget {
         if (isFromSettings) {
           context.pop();
         } else {
+
+          GetStorage().write('is_onboarding_seen', true);
           context.go('/home');
         }
       },
