@@ -9,13 +9,10 @@ abstract class SearchState extends Equatable {
   List<Object?> get props => [];
 }
 
-// 1. İlkin vəziyyət (Ekran ilk açılanda və ya axtarış silinəndə)
 class SearchInitial extends SearchState {}
 
-// 2. Yüklənmə vəziyyəti (API-ya sorğu göndəriləndə)
 class SearchLoading extends SearchState {}
 
-// 3. Uğurlu nəticə vəziyyəti (Məlumatlar gələndə)
 class SearchSuccess extends SearchState {
   final List<ArticleEntity> articles;
 
@@ -25,7 +22,6 @@ class SearchSuccess extends SearchState {
   List<Object?> get props => [articles];
 }
 
-// 4. Xəta vəziyyəti (İnternet kəsiləndə və ya server problemi olanda)
 class SearchError extends SearchState {
   final String message;
 
