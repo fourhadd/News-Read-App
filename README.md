@@ -124,7 +124,7 @@ Tətbiq [The Guardian Content API](https://open-platform.theguardian.com/documen
 </tr>
 <tr>
 <td align="center"><b>Məqalə təfərrüatı</b><br/><img src="screenshots/article_detail.png" width="220" /></td>
-<td></td>
+<td align="center"><b>İnternet yoxdur</b><br/><img src="screenshots/network_lost.png" width="220" /></td>
 <td></td>
 </tr>
 </table>
