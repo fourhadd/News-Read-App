@@ -1,35 +1,35 @@
 # NewsFeed 📰
 
-Flutter ilə hazırlanmış, Clean Architecture prinsiplərinə əsaslanan xəbər oxuma tətbiqi. [The Guardian API](https://open-platform.theguardian.com/) üzərindən kateqoriyalara görə xəbərləri gətirir, axtarış, bookmark, oxunmuş məqalələr, dark/light tema və şrift ölçüsü tənzimləmələri kimi funksiyaları dəstəkləyir.
+A news reading app built with Flutter, based on Clean Architecture principles. It fetches news by category via [The Guardian API](https://open-platform.theguardian.com/), and supports search, bookmarks, read-article tracking, dark/light theme, and font size adjustment.
 
-## ✨ Xüsusiyyətlər
+## ✨ Features
 
-- **Ana səhifə** — kateqoriyalara görə xəbər lenti, aşağı sürüşdükcə avtomatik yeni səhifə yüklənməsi (infinite scroll)
-- **Axtarış** — açar sözlə xəbər axtarışı, son axtarışlar
-- **Məqalə təfərrüatı** — WebView ilə orijinal mənbəyə keçid, şrift ölçüsünü tənzimləmə
-- **Bookmarklar** — məqalələri saxlama və oflayn baxma
-- **Oxunmuş məqalə izləmə** — hansı məqalələrin oxunduğunu yadda saxlayır
-- **Onboarding** — istifadəçinin maraq dairəsinə uyğun kateqoriya seçimi
-- **Tənzimləmələr** — dark/light tema, şrift ölçüsü slaydırı
-- **Şəkil keşləməsi** — `cached_network_image` ilə optimallaşdırılmış şəkil yüklənməsi
-- **Oflayn dəstək** — internet bağlantısı olmadıqda uyğun xəbərdarlıq
+- **Home** — news feed by category, automatic loading of the next page as you scroll down (infinite scroll)
+- **Search** — search news by keyword, recent searches
+- **Article detail** — link to the original source via WebView, adjustable font size
+- **Bookmarks** — save articles and view them offline
+- **Read article tracking** — remembers which articles have been read
+- **Onboarding** — category selection based on the user's interests
+- **Settings** — dark/light theme, font size slider
+- **Image caching** — optimized image loading with `cached_network_image`
+- **Offline support** — appropriate warning when there is no internet connection
 
-## 🏗️ Arxitektura
+## 🏗️ Architecture
 
-Layihə **Clean Architecture** prinsipi ilə qat-qat təşkil olunub:
+The project is organized layer by layer following **Clean Architecture** principles:
 
 ```
 lib/
-├── app/                  # Tətbiqin kök widget-i
-├── core/                 # Ümumi köməkçi qatlar
-│   ├── constants/        # Rənglər, mətn stilləri, spacing, strings
+├── app/                  # App's root widget
+├── core/                 # Shared helper layers
+│   ├── constants/        # Colors, text styles, spacing, strings
 │   ├── di/               # Dependency Injection (get_it)
-│   ├── error/            # Failure / Exception sinifləri
+│   ├── error/            # Failure / Exception classes
 │   ├── network/          # API constants, secure storage
-│   ├── router/           # go_router konfiqurasiyası
-│   ├── theme/            # Tema idarəetməsi
-│   └── widgets/          # Bölünmüş ümumi widget-lər
-└── features/             # Hər feature öz qatları ilə
+│   ├── router/           # go_router configuration
+│   ├── theme/            # Theme management
+│   └── widgets/          # Shared widgets
+└── features/             # Each feature with its own layers
     ├── home/
     ├── search/
     ├── article_detail/
@@ -37,36 +37,36 @@ lib/
     ├── settings/
     ├── onboarding/
     ├── webview/
-    └── news/             # Domain + Data qatları (repository, usecase, model, entity)
+    └── news/             # Domain + Data layers (repository, usecase, model, entity)
         ├── data/
         └── domain/
 ```
 
-Hər feature `presentation` (UI + Cubit), `domain` (entities, usecases, repository interface) və `data` (models, datasources, repository impl) qatlarına bölünür.
+Each feature is split into `presentation` (UI + Cubit), `domain` (entities, usecases, repository interface), and `data` (models, datasources, repository impl) layers.
 
-## 🛠️ İstifadə olunan texnologiyalar
+## 🛠️ Tech stack
 
-| Kateqoriya            | Paket                                            |
-|------------------------|--------------------------------------------------|
-| State management       | `flutter_bloc` (Cubit)                            |
-| Dependency Injection    | `get_it`                                          |
-| Network                | `dio`                                             |
-| Routing                | `go_router`                                       |
-| Local storage          | `get_storage`, `flutter_secure_storage`           |
-| Şəkil keşləməsi        | `cached_network_image`                            |
-| Responsive UI          | `flutter_screenutil`                              |
-| Funksional error handling | `dartz` (Either/Failure)                       |
-| Connectivity           | `connectivity_plus`                               |
+| Category                   | Package                                    |
+|-----------------------------|---------------------------------------------|
+| State management            | `flutter_bloc` (Cubit)                     |
+| Dependency Injection        | `get_it`                                   |
+| Network                     | `dio`                                      |
+| Routing                     | `go_router`                                |
+| Local storage               | `get_storage`, `flutter_secure_storage`   |
+| Image caching               | `cached_network_image`                    |
+| Responsive UI               | `flutter_screenutil`                     |
+| Functional error handling   | `dartz` (Either/Failure)                  |
+| Connectivity                | `connectivity_plus`                      |
 
-## 🚀 Başlamaq
+## 🚀 Getting started
 
-### Tələblər
+### Requirements
 
-- Flutter SDK (stabil kanal)
+- Flutter SDK (stable channel)
 - Dart SDK
-- The Guardian API açarı — [buradan](https://open-platform.theguardian.com/access/) pulsuz əldə edə bilərsiniz
+- A Guardian API key — get one for free [here](https://open-platform.theguardian.com/access/)
 
-### Quraşdırma
+### Setup
 
 ```bash
 git clone <repo-url>
@@ -74,9 +74,9 @@ cd news_feed
 flutter pub get
 ```
 
-### API açarını təyin et
+### Set your API key
 
-`lib/core/network/api_constants.dart` faylında öz API açarınızı yazın:
+In `lib/core/network/api_constants.dart`, add your own API key:
 
 ```dart
 class ApiConstants {
@@ -86,7 +86,7 @@ class ApiConstants {
 }
 ```
 
-### İşə salmaq
+### Run
 
 ```bash
 flutter run
@@ -94,41 +94,41 @@ flutter run
 
 ## 📄 API
 
-Tətbiq [The Guardian Content API](https://open-platform.theguardian.com/documentation/)-dan istifadə edir:
+The app uses [The Guardian Content API](https://open-platform.theguardian.com/documentation/):
 
-- `GET /search` — kateqoriyaya görə xəbərləri gətirmək (`section` parametri ilə)
-- `GET /search?q=` — açar sözlə axtarış
-- Səhifələmə `page` və `page-size` parametrləri ilə idarə olunur
+- `GET /search` — fetch news by category (via the `section` parameter)
+- `GET /search?q=` — search by keyword
+- Pagination is handled via the `page` and `page-size` parameters
 
-## 📱 Ekranlar
+## 📱 Screens
 
-- Onboarding → maraq dairəsi seçimi
-- Ana səhifə → kateqoriya tabları + xəbər lenti (infinite scroll)
-- Axtarış → axtarış inputu + nəticələr / son axtarışlar
-- Məqalə təfərrüatı → tam məzmun + WebView keçidi
-- Bookmarklar → saxlanılan məqalələr
-- Tənzimləmələr → tema və şrift tənzimləmələri
+- Onboarding → interest selection
+- Home → category tabs + news feed (infinite scroll)
+- Search → search input + results / recent searches
+- Article detail → full content + WebView link
+- Bookmarks → saved articles
+- Settings → theme and font size adjustments
 
-## 📸 Ekran görüntüləri
+## 📸 Screenshots
 
 <table>
 <tr>
 <td align="center"><b>Onboarding</b><br/><img src="screenshots/onboarding.png" width="220" /></td>
-<td align="center"><b>Ana səhifə</b><br/><img src="screenshots/home.png" width="220" /></td>
-<td align="center"><b>Axtarış</b><br/><img src="screenshots/search.png" width="220" /></td>
+<td align="center"><b>Home</b><br/><img src="screenshots/home.png" width="220" /></td>
+<td align="center"><b>Search</b><br/><img src="screenshots/search.png" width="220" /></td>
 </tr>
 <tr>
-<td align="center"><b>Bookmarklar</b><br/><img src="screenshots/bookmarks.png" width="220" /></td>
-<td align="center"><b>Tənzimləmələr</b><br/><img src="screenshots/settings.png" width="220" /></td>
-<td align="center"><b>Maraqları redaktə et</b><br/><img src="screenshots/interests_edit.png" width="220" /></td>
+<td align="center"><b>Bookmarks</b><br/><img src="screenshots/bookmarks.png" width="220" /></td>
+<td align="center"><b>Settings</b><br/><img src="screenshots/settings.png" width="220" /></td>
+<td align="center"><b>Edit interests</b><br/><img src="screenshots/interests_edit.png" width="220" /></td>
 </tr>
 <tr>
-<td align="center"><b>Məqalə təfərrüatı</b><br/><img src="screenshots/article_detail.png" width="220" /></td>
-<td align="center"><b>İnternet yoxdur</b><br/><img src="screenshots/network_lost.png" width="220" /></td>
+<td align="center"><b>Article detail</b><br/><img src="screenshots/article_detail.png" width="220" /></td>
+<td align="center"><b>No internet</b><br/><img src="screenshots/network_lost.png" width="220" /></td>
 <td></td>
 </tr>
 </table>
 
-## 📝 Lisenziya
+## 📝 License
 
-Bu layihə təhsil/nümayiş məqsədləri üçün hazırlanmışdır.
+This project was built for educational/demo purposes.
